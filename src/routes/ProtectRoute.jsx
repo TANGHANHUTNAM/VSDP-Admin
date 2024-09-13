@@ -9,7 +9,7 @@ const ProtectRoute = ({ children }) => {
       {isLoading ? (
         <LoadingPage />
       ) : (
-        <>{isAuth ? <>{children}</> : <Navigate to="/login" replace />}</>
+        <>{isAuth ? <>{children}</> : <Navigate to="admin/login" replace />}</>
       )}
     </>
   );
