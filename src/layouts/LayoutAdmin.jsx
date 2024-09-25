@@ -19,41 +19,41 @@ const LayoutAdmin = () => {
   const role = "admin";
   const menuAdmin = [
     {
-      key: "/admin",
+      key: "/",
       icon: <RxDashboard />,
-      label: <Link to="/admin">Dashboard</Link>,
+      label: <Link to="/">Dashboard</Link>,
     },
     {
-      key: "/admin/user",
+      key: "/user",
       icon: <FiUsers />,
-      label: <Link to="/admin/user">Tài khoản</Link>,
+      label: <Link to="/user">Tài khoản</Link>,
     },
     {
-      key: "/admin/role",
+      key: "/role",
       icon: <RiUserSettingsLine />,
-      label: <Link to="/admin/role">Vai trò</Link>,
+      label: <Link to="/role">Vai trò</Link>,
     },
     {
-      key: "/admin/permission",
+      key: "/permission",
       icon: <GrShieldSecurity />,
-      label: <Link to="/admin/permission">Quyền hạn</Link>,
+      label: <Link to="/permission">Quyền hạn</Link>,
     },
     {
-      key: "/admin/resume",
+      key: "/resume",
       icon: <TbFileCv />,
-      label: <Link to="/admin/resume">Hồ sơ</Link>,
+      label: <Link to="/resume">Hồ sơ</Link>,
     },
   ];
   const menuTNV = [
     {
-      key: "/admin",
+      key: "",
       icon: <UserOutlined />,
-      label: <Link to="/admin">Dashboard</Link>,
+      label: <Link to="">Dashboard</Link>,
     },
     {
-      key: "/admin/resume",
+      key: "/resume",
       icon: <UploadOutlined />,
-      label: <Link to="/admin/resume">Resume</Link>,
+      label: <Link to="/resume">Resume</Link>,
     },
   ];
   const [collapsed, setCollapsed] = useState(false);

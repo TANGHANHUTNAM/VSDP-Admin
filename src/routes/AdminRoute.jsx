@@ -1,5 +1,4 @@
 import { createBrowserRouter } from "react-router-dom";
-import LayoutApp from "../layouts/LayoutApp";
 import LayoutAdmin from "../layouts/LayoutAdmin";
 import NotFoundPage from "../pages/NotFoundPage";
 import DashBoardPage from "../pages/DashBoardPage";
@@ -13,74 +12,46 @@ import ProfilePage from "../pages/ProfilePage";
 import SettingPage from "../pages/SettingPage";
 const router = createBrowserRouter([
   {
-    path: "/admin",
+    path: "/",
     element: (
-      <LayoutApp>
+      <ProtectRoute>
         <LayoutAdmin />
-      </LayoutApp>
+      </ProtectRoute>
     ),
 
     children: [
       {
         index: true,
-        element: (
-          <ProtectRoute>
-            <DashBoardPage />
-          </ProtectRoute>
-        ),
+        element: <DashBoardPage />,
       },
       {
         path: "user",
-        element: (
-          <ProtectRoute>
-            <UserPage />
-          </ProtectRoute>
-        ),
+        element: <UserPage />,
       },
       {
         path: "resume",
-        element: (
-          <ProtectRoute>
-            <ResumePage />
-          </ProtectRoute>
-        ),
+        element: <ResumePage />,
       },
       {
         path: "role",
-        element: (
-          <ProtectRoute>
-            <RolePage />
-          </ProtectRoute>
-        ),
+        element: <RolePage />,
       },
       {
         path: "permission",
-        element: (
-          <ProtectRoute>
-            <PermissionPage />
-          </ProtectRoute>
-        ),
+        element: <PermissionPage />,
       },
       {
         path: "profile",
-        element: (
-          <ProtectRoute>
-            <ProfilePage />
-          </ProtectRoute>
-        ),
+        element: <ProfilePage />,
       },
       {
         path: "setting",
-        element: (
-          <ProtectRoute>
-            <SettingPage />
-          </ProtectRoute>
-        ),
+        element: <SettingPage />,
       },
     ],
   },
   {
-    path: "admin/login",
+    path: "/login",
     element: <AuthPage />,
   },
   {
