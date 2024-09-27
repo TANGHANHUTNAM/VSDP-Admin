@@ -2,22 +2,28 @@ import { Dropdown } from "antd";
 import Avatar from "../Avatar/Avatar";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/hook/hook";
-import { logoutUser, setIsLogout } from "../../redux/auth/authSlice";
-import { useEffect } from "react";
+import { setLogoutAuth } from "../../redux/auth/authSlice";
+import { toast } from "react-toastify";
+import { logoutService } from "../../services/authService";
+import { setLogoutUser } from "../../redux/user/userSlice";
 
 const HeaderDropdown = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { isLogout } = useAppSelector((state) => state.auth);
-  const handleLogout = () => {
-    dispatch(logoutUser());
-  };
-  useEffect(() => {
-    if (isLogout) {
-      dispatch(setIsLogout());
+  const user = useAppSelector((state) => state.user);
+  // Xử lý logout
+  const handleLogout = async () => {
+    const res = await logoutService();
+    if (res.EC === 0) {
+      // dispatch(setLogoutUser());
+      dispatch(setLogoutAuth());
+      dispatch(setLogoutUser());
       navigate("/login");
+      toast.success(res.EM);
+    } else {
+      toast.error(res.EM);
     }
-  }, [isLogout]);
+  };
   const items = [
     {
       label: <Link to="/admin/profile">Trang cá nhân</Link>,
@@ -35,7 +41,7 @@ const HeaderDropdown = () => {
   return (
     <div className="flex">
       <div className="mr-3">
-        Quản trị viên! <b>Nhựt Nam</b>
+        {user.role.name} <b>{user.user.email}</b>
       </div>
       <Dropdown
         menu={{ items }}

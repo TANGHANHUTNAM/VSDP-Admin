@@ -1,75 +1,50 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {
-  loginService,
-  logoutService,
-  refreshTokenService,
-} from "../../services/authService";
-import { setLogout } from "../user/userSlice";
+import { createSlice } from "@reduxjs/toolkit";
+import { message } from "antd";
 
-export const loginUser = createAsyncThunk("auth/loginUser", async (data) => {
-  const response = await loginService(data);
-  return response;
-});
-
-export const logoutUser = createAsyncThunk(
-  "auth/logoutUser",
-  async (_, thunkAPI) => {
-    const response = await logoutService();
-    if (response.EC === 0) {
-      thunkAPI.dispatch(setlogout());
-      thunkAPI.dispatch(setLogout());
-    }
-    return response;
-  }
-);
+// export const loginUser = createAsyncThunk("auth/loginUser", async (data) => {
+//   const response = await loginService(data);
+//   return response;
+// });
 
 const initialState = {
-  access_token: null,
-  isRefreshToken: false,
-  errorRefreshToken: null,
-  isLogout: false,
-  EC: null,
-  EM: null,
+  isAuthenticated: false,
+  isRefreshError: false,
+  messageRefreshError: "",
 };
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setAccess_token: (state, action) => {
-      state.access_token = action?.payload?.DT.access_token;
+    setLoginAuth: (state) => {
+      state.isAuthenticated = true;
     },
-    setlogout: (state) => {
-      state.access_token = null;
-      localStorage.removeItem("persist:root");
-      state.isLogout = true;
-      state.EC = null;
-      state.EM = null;
+    setLogoutAuth: (state) => {
+      localStorage.removeItem("access_token");
+      state.isAuthenticated = false;
     },
-    setIsLogout: (state) => {
-      state.isLogout = false;
+    setRefreshTokenError: (state, { payload }) => {
+      state.isRefreshError = true;
+      state.messageRefreshError = payload;
     },
-    setResetStatus: (state) => {
-      state.EC = null;
-      state.EM = null;
+    setResetRefreshTokenError: (state) => {
+      state.isRefreshError = false;
+      state.messageRefreshError = "";
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(loginUser.fulfilled, (state, action) => {
-      if (action.payload) {
-        state.access_token = action?.payload?.DT?.access_token ?? null;
-        state.EC = action.payload.EC;
-        state.EM = action.payload.EM;
-      }
-    });
+    // builder.addCase(loginUser.fulfilled, (state, action) => {
+    //   state.isLoading = false;
+    //   state.isAuthenticated = true;
+    //   state.access_token = action?.payload?.DT?.access_token ?? null;
+    // });
   },
 });
 
 export const {
-  setAuth,
-  setlogout,
-  setIsLogout,
-  setResetStatus,
-  setAccess_token,
+  setLoginAuth,
+  setLogoutAuth,
+  setRefreshTokenError,
+  setResetRefreshTokenError,
 } = authSlice.actions;
 
 export default authSlice.reducer;

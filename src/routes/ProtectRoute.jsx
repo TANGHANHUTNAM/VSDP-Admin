@@ -1,22 +1,35 @@
 import { Navigate } from "react-router-dom";
 import LoadingPage from "../pages/LoadingPage";
 import { useAppSelector } from "../redux/hook/hook";
-import { useEffect } from "react";
-import { toast } from "react-toastify";
+// import NotPermitted from "../pages/NotPermitted";
+
+// const RoleUser = ({ children }) => {
+//   const isAdminRoute = window.location.pathname.includes("/");
+//   const { role } = useAppSelector((state) => state.user);
+//   const userRole = role.name;
+//   if (isAdminRoute && userRole) {
+//     return children;
+//   } else {
+//     return <NotPermitted />;
+//   }
+// };
 
 const ProtectRoute = ({ children }) => {
-  const { isLoading, isAuthenticated } = useAppSelector((state) => state.user);
-  useEffect(() => {
-    if (isAuthenticated) {
-      toast.success("Đăng nhập thành công");
-    }
-  });
+  const { isLoading } = useAppSelector((state) => state.user);
+  const access_token = localStorage.getItem("access_token");
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
   return (
     <>
       {isLoading ? (
         <LoadingPage />
       ) : (
-        <>{isAuthenticated ? children : <Navigate to="/login" />}</>
+        <>
+          {isAuthenticated && access_token ? (
+            <>{children}</>
+          ) : (
+            <Navigate to="/login" replace />
+          )}
+        </>
       )}
     </>
   );

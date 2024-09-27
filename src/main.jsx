@@ -9,6 +9,8 @@ import { PersistGate } from "redux-persist/integration/react";
 import LoadingPage from "./pages/LoadingPage.jsx";
 import LayoutApp from "./layouts/LayoutApp.jsx";
 import { setStore } from "./utils/axiosCustomize.js";
+import LoadingBar from "react-top-loading-bar";
+import { loadingBarRef } from "./utils/axiosCustomize.js";
 
 setStore(store);
 createRoot(document.getElementById("root")).render(
@@ -30,6 +32,7 @@ createRoot(document.getElementById("root")).render(
           theme="light"
           transition={Bounce}
         />
+        <LoadingBar color="#00BDD4" ref={loadingBarRef} />
       </LayoutApp>
     </PersistGate>
   </Provider>
