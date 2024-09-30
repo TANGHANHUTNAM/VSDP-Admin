@@ -1,6 +1,8 @@
 import LoginForm from "../components/Auth/LoginForm";
 import vsdp from "../assets/images/vsdp.jpg";
+import useTitle from "../hooks/useTitle";
 const AuthPage = () => {
+  useTitle("Login");
   return (
     <div className="flex items-center justify-center min-h-screen bg-blue-50">
       <div className="flex justify-center">

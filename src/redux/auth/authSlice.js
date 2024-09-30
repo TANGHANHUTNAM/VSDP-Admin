@@ -1,13 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { message } from "antd";
-
-// export const loginUser = createAsyncThunk("auth/loginUser", async (data) => {
-//   const response = await loginService(data);
-//   return response;
-// });
-
 const initialState = {
-  isAuthenticated: false,
+  isAuthenticated: true,
   isRefreshError: false,
   messageRefreshError: "",
 };
@@ -31,7 +24,7 @@ const authSlice = createSlice({
       state.messageRefreshError = "";
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: () => {
     // builder.addCase(loginUser.fulfilled, (state, action) => {
     //   state.isLoading = false;
     //   state.isAuthenticated = true;

@@ -14,6 +14,7 @@ import {
   setResetRefreshTokenError,
 } from "../../redux/auth/authSlice";
 import { getInforUser } from "../../redux/user/userSlice";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -21,22 +22,27 @@ const LoginForm = () => {
 
   // Handle Login
   const handleLogin = async (data) => {
-    const respone = await loginService(data);
-    if (respone.EC === statusCode.SUCCESS_DAFAULT) {
-      localStorage.setItem("access_token", respone.DT.access_token);
-      dispatch(setLoginAuth());
-      dispatch(getInforUser());
-      toast.success(respone.EM);
-      navigate("/");
-    }
-    if (respone.EC !== statusCode.SUCCESS_DAFAULT) {
-      toast.error(respone.EM);
+    try {
+      const respone = await loginService(data);
+      if (respone && respone.EC === statusCode.SUCCESS_DAFAULT) {
+        localStorage.setItem("access_token", respone.DT.access_token);
+        dispatch(setLoginAuth());
+        dispatch(getInforUser());
+        toast.success(respone.EM);
+        navigate("/");
+      }
+      if (respone && respone.EC !== statusCode.SUCCESS_DAFAULT) {
+        toast.error(respone.EM);
+      }
+    } catch (error) {
+      if (error.code === "ERR_NETWORK")
+        toast.error("Lỗi server! Vui lòng thử lại sau");
     }
   };
   // Handle User is Authenticated
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && localStorage.getItem("access_token")) {
       navigate("/");
     }
   }, [isAuthenticated, navigate]);
@@ -135,7 +141,9 @@ const LoginForm = () => {
           </div>
         </form>
       </div>
-      <LoginGG />
+      <GoogleOAuthProvider clientId="">
+        <LoginGG />
+      </GoogleOAuthProvider>
     </div>
   );
 };

@@ -6,16 +6,18 @@ import { setLogoutAuth } from "../../redux/auth/authSlice";
 import { toast } from "react-toastify";
 import { logoutService } from "../../services/authService";
 import { setLogoutUser } from "../../redux/user/userSlice";
-
+import { FaUserCog } from "react-icons/fa";
+import { IoMdSettings } from "react-icons/io";
+import { TbLogout2 } from "react-icons/tb";
 const HeaderDropdown = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const user = useAppSelector((state) => state.user);
+
   // Xử lý logout
+  const user = useAppSelector((state) => state.user);
   const handleLogout = async () => {
     const res = await logoutService();
     if (res.EC === 0) {
-      // dispatch(setLogoutUser());
       dispatch(setLogoutAuth());
       dispatch(setLogoutUser());
       navigate("/login");
@@ -26,16 +28,23 @@ const HeaderDropdown = () => {
   };
   const items = [
     {
-      label: <Link to="/admin/profile">Trang cá nhân</Link>,
-      key: "/admin/profile",
+      label: <Link to="/profile">Trang cá nhân</Link>,
+      key: "/profile",
+      icon: <FaUserCog />,
     },
     {
-      label: <Link to="/admin/setting">Cài đặt</Link>,
-      key: "/admin/setting",
+      label: <Link to="/setting">Cài đặt</Link>,
+      key: "/setting",
+      icon: <IoMdSettings />,
     },
     {
       label: <span onClick={() => handleLogout()}>Đăng xuất</span>,
       key: "log out",
+      icon: (
+        <span onClick={() => handleLogout()}>
+          <TbLogout2 />
+        </span>
+      ),
     },
   ];
   return (

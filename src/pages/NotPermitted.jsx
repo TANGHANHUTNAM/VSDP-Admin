@@ -1,6 +1,8 @@
 import { Button, Result } from "antd";
+import useTitle from "../hooks/useTitle";
 
 const NotPermitted = () => {
+  useTitle("403 Not Permitted");
   return (
     <Result
       status="403"
