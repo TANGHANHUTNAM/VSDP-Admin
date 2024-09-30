@@ -4,6 +4,10 @@ export const loginService = async (data) => {
   return await axios.post("/api/v1/auth/login", data);
 };
 
+export const loginGGService = async (data) => {
+  return await axios.post("/api/v1/auth/loginWithGoogle", data);
+};
+
 export const createAccountService = async (data) => {
   return await axios.post("/api/v1/auth/create", data);
 };

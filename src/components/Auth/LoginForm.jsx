@@ -7,48 +7,60 @@ import { IoEyeOff } from "react-icons/io5";
 import { IoEye } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  loginUser,
-  setIsLogout,
-  setResetStatus,
-} from "../../redux/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hook/hook";
+import { loginService } from "../../services/authService";
+import {
+  setLoginAuth,
+  setResetRefreshTokenError,
+} from "../../redux/auth/authSlice";
 import { getInforUser } from "../../redux/user/userSlice";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const LoginForm = () => {
-  const dispatch = useAppDispatch();
-  const [showPassword, setShowPassword] = useState(true);
-  const { register, handleSubmit, formState } = useForm();
-  const { errors } = formState;
-
-  const handleLogin = async (data) => {
-    dispatch(loginUser(data));
-  };
   const navigate = useNavigate();
-  const { EM, EC } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    if (EC === null) {
-      return;
+  // Handle Login
+  const handleLogin = async (data) => {
+    try {
+      const respone = await loginService(data);
+      if (respone && respone.EC === statusCode.SUCCESS_DAFAULT) {
+        localStorage.setItem("access_token", respone.DT.access_token);
+        dispatch(setLoginAuth());
+        dispatch(getInforUser());
+        toast.success(respone.EM);
+        navigate("/");
+      }
+      if (respone && respone.EC !== statusCode.SUCCESS_DAFAULT) {
+        toast.error(respone.EM);
+      }
+    } catch (error) {
+      if (error.code === "ERR_NETWORK")
+        toast.error("Lỗi server! Vui lòng thử lại sau");
     }
-    if (EC === statusCode.SUCCESS_DAFAULT) {
-      dispatch(getInforUser());
+  };
+  // Handle User is Authenticated
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  useEffect(() => {
+    if (isAuthenticated && localStorage.getItem("access_token")) {
       navigate("/");
     }
-    if (EC !== statusCode.SUCCESS_DAFAULT) {
-      toast.error(EM);
-      dispatch(setResetStatus());
-    }
-  }, [EC, EM, navigate, dispatch]);
-
-  const { isLogout } = useAppSelector((state) => state.auth);
+  }, [isAuthenticated, navigate]);
+  // Handle Error refresh token
+  const { isRefreshError, messageRefreshError } = useAppSelector(
+    (state) => state.auth
+  );
   useEffect(() => {
-    if (isLogout) {
-      toast.success("Logout Success");
-      dispatch(setIsLogout());
+    if (isRefreshError) {
+      toast.error(messageRefreshError);
+      dispatch(setResetRefreshTokenError());
     }
-  }, [isLogout]);
-
+  }, [isRefreshError, messageRefreshError, dispatch]);
+  // Show Password
+  const [showPassword, setShowPassword] = useState(true);
+  // UseForm
+  const { register, handleSubmit, formState } = useForm();
+  const { errors } = formState;
   return (
     <div className="form-login p-3 bg-white rounded-l-lg shadow-lg h-[500px]">
       <div className="header ">
@@ -129,7 +141,9 @@ const LoginForm = () => {
           </div>
         </form>
       </div>
-      <LoginGG />
+      <GoogleOAuthProvider clientId="">
+        <LoginGG />
+      </GoogleOAuthProvider>
     </div>
   );
 };

@@ -1,7 +1,9 @@
 import { Button, Result } from "antd";
 import { Link } from "react-router-dom";
+import useTitle from "../hooks/useTitle";
 
 const NotFoundPage = () => {
+  useTitle("404 Not Found");
   return (
     <div className="flex min-h-screen items-center justify-center">
       <Result

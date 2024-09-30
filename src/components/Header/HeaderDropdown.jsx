@@ -2,40 +2,55 @@ import { Dropdown } from "antd";
 import Avatar from "../Avatar/Avatar";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/hook/hook";
-import { logoutUser, setIsLogout } from "../../redux/auth/authSlice";
-import { useEffect } from "react";
-
+import { setLogoutAuth } from "../../redux/auth/authSlice";
+import { toast } from "react-toastify";
+import { logoutService } from "../../services/authService";
+import { setLogoutUser } from "../../redux/user/userSlice";
+import { FaUserCog } from "react-icons/fa";
+import { IoMdSettings } from "react-icons/io";
+import { TbLogout2 } from "react-icons/tb";
 const HeaderDropdown = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { isLogout } = useAppSelector((state) => state.auth);
-  const handleLogout = () => {
-    dispatch(logoutUser());
-  };
-  useEffect(() => {
-    if (isLogout) {
-      dispatch(setIsLogout());
+
+  // Xử lý logout
+  const user = useAppSelector((state) => state.user);
+  const handleLogout = async () => {
+    const res = await logoutService();
+    if (res.EC === 0) {
+      dispatch(setLogoutAuth());
+      dispatch(setLogoutUser());
       navigate("/login");
+      toast.success(res.EM);
+    } else {
+      toast.error(res.EM);
     }
-  }, [isLogout]);
+  };
   const items = [
     {
-      label: <Link to="/admin/profile">Trang cá nhân</Link>,
-      key: "/admin/profile",
+      label: <Link to="/profile">Trang cá nhân</Link>,
+      key: "/profile",
+      icon: <FaUserCog />,
     },
     {
-      label: <Link to="/admin/setting">Cài đặt</Link>,
-      key: "/admin/setting",
+      label: <Link to="/setting">Cài đặt</Link>,
+      key: "/setting",
+      icon: <IoMdSettings />,
     },
     {
       label: <span onClick={() => handleLogout()}>Đăng xuất</span>,
       key: "log out",
+      icon: (
+        <span onClick={() => handleLogout()}>
+          <TbLogout2 />
+        </span>
+      ),
     },
   ];
   return (
     <div className="flex">
       <div className="mr-3">
-        Quản trị viên! <b>Nhựt Nam</b>
+        {user.role.name} <b>{user.user.email}</b>
       </div>
       <Dropdown
         menu={{ items }}
